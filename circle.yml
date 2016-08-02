@@ -7,7 +7,7 @@ dependencies:
     - docker info
     - docker build -t massat/massat.jp .
 
-tests: ~
+test: ~
 
 deployment:
   hub:
