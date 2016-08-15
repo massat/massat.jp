@@ -22,5 +22,8 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push massat/massat.jp:$CIRCLE_SHA1
-      - aws elasticbeanstalk create-application-version --application-name=massat.jp --version-label=$CIRCLE_SHA1
+      - aws s3 cp Dockerrun.aws.json s3://massat.jp/Dockerrun.aws.json
+      - aws elasticbeanstalk create-application-version \
+        --application-name=massat.jp --version-label=$CIRCLE_SHA1 \
+        --source-bundle S3Bucket=massat.jp,S3Key=Dockerrun.aws.json
       - aws elasticbeanstalk update-environment --environment-name massatjp --version-label=$CIRCLE_SHA1
