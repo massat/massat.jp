@@ -6,7 +6,10 @@ machine:
 
 dependencies:
   pre:
-    - pip install awscli
+    - sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
+    - sudo chmod +x /usr/local/bin/ecs-cli
+    - /usr/local/bin/ecs-cli configure -c massat-jp
+
   override:
     - docker info
     - docker build -t massat/massat.jp:$CIRCLE_SHA1 .
@@ -22,7 +25,5 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push massat/massat.jp:$CIRCLE_SHA1
-      - sed "s/<TAG>/$CIRCLE_SHA1/" < Dockerrun.aws.json.template > $CIRCLE_SHA1-Dockerrun.aws.json
-      - aws s3 cp $CIRCLE_SHA1-Dockerrun.aws.json s3://massat.jp/$CIRCLE_SHA1-Dockerrun.aws.json
-      - aws elasticbeanstalk create-application-version --application-name=massat.jp --version-label=$CIRCLE_SHA1 --source-bundle S3Bucket=massat.jp,S3Key=$CIRCLE_SHA1-Dockerrun.aws.json
-      - aws elasticbeanstalk update-environment --environment-name massatjp --version-label=$CIRCLE_SHA1
+      - sed "s/<TAG>/$CIRCLE_SHA1/" < docker-compose.yml.template > docker-compose.yml
+      - /usr/local/bin/ecs-cli compose -p massat-jp service up

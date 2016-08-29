@@ -1,6 +1,6 @@
 version: 2
 services:
   web:
-    image: massat/massat.jp
+    image: massat/massat.jp:<TAG>
     ports:
       - 80:80
