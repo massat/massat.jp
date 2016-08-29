@@ -1,0 +1,6 @@
+version: 2
+services:
+  web:
+    image: massat/massat.jp
+    ports:
+      - 80:80
