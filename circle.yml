@@ -26,4 +26,4 @@ deployment:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push massat/massat.jp:$CIRCLE_SHA1
       - sed "s/<TAG>/$CIRCLE_SHA1/" < docker-compose.yml.template > docker-compose.yml
-      - /usr/local/bin/ecs-cli compose -p massat-jp service up
+      - /usr/local/bin/ecs-cli compose -p massat-jp service up --deployment-min-healthy-percent=0
